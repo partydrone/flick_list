@@ -1,11 +1,6 @@
 FROM ruby:2.6
 LABEL maintainer="Andrew Porter <partydrone@icloud.com>"
 
-RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
-  nodejs \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get clean
-
 ##
 # Install Node.js and Yarn
 RUN groupadd --gid 1000 node \
@@ -73,6 +68,13 @@ RUN set -ex \
   && rm yarn-v$YARN_VERSION.tar.gz.asc yarn-v$YARN_VERSION.tar.gz \
   # smoke test
   && yarn --version
+
+##
+# Install system packages
+RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
+  nano \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
 
 ##
 # Build the Rails application
