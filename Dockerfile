@@ -1,12 +1,14 @@
 FROM ruby:2.6
 LABEL maintainer="Andrew Porter <partydrone@icloud.com>"
 
+ENV APP_DIR /srv/app
+ENV NODE_VERSION 14.4.0
+ENV YARN_VERSION 1.22.4
+
 ##
 # Install Node.js and Yarn
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
-
-ENV NODE_VERSION 14.4.0
 
 RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && case "${dpkgArch##*-}" in \
@@ -48,8 +50,6 @@ RUN ARCH= && dpkgArch="$(dpkg --print-architecture)" \
   && node --version \
   && npm --version
 
-ENV YARN_VERSION 1.22.4
-
 RUN set -ex \
   && for key in \
     6A010C5166006599AA17F08146C2130DFD2497F5 \
@@ -75,6 +75,11 @@ RUN apt-get update -qq && apt-get install -qq -y --no-install-recommends \
   nano \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
+
+##
+# Create a cache layer for node packages
+COPY package.json yarn.lock /tmp/
+RUN cd /tmp && yarn
 
 ##
 # Build the Rails application

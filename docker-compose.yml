@@ -7,6 +7,8 @@ services:
       - postgres
       - proxy
       - redis
+    env_file:
+      - .env
     labels:
       - traefik.enable=true
       - traefik.http.routers.app.entryPoints=web
@@ -20,6 +22,7 @@ services:
     volumes:
       - .:/srv/app
       - ./public:/srv/app/public
+      - /srv/app/node_modules
       - type: tmpfs
         target: /srv/app/tmp/pids/
 
@@ -27,22 +30,30 @@ services:
     command: puma -p 28080 cable/config.ru
     depends_on:
       - redis
+    env_file:
+      - .env
     image: flick_list_app:latest
     ports:
       - 28080:28080
     volumes:
       - .:/srv/app
+      - /srv/app/node_modules
 
   sidekiq:
     command: sidekiq -C config/sidekiq.yml.erb
     depends_on:
       - postgres
       - redis
+    env_file:
+      - .env
     image: flick_list_app:latest
     volumes:
       - .:/srv/app
+      - /srv/app/node_modules
 
   postgres:
+    env_file:
+      - .env
     image: postgres:12-alpine
     restart: always
     volumes:
