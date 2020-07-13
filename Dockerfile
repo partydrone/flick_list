@@ -83,10 +83,11 @@ RUN cd /tmp && yarn
 
 ##
 # Build the Rails application
-WORKDIR /srv/app
+WORKDIR ${APP_DIR}
 COPY Gemfile* ./
 RUN bundle install --system -j4
 RUN bundle binstubs sidekiq
+RUN cp -a /tmp/node_modules .
 
 COPY . .
 

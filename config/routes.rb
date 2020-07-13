@@ -6,5 +6,9 @@ Rails.application.routes.draw do
   get 'auth/failure' => 'auth0#failure'
   get 'logout' => 'logout#logout'
 
+  namespace :admin do
+    resources :users, only: [:index]
+  end
+
   root to: 'pages#home'
 end
