@@ -32,6 +32,9 @@ gem 'sidekiq', '~> 5.2.9'
 gem 'omniauth-auth0', '~> 2.2'
 gem 'omniauth-rails_csrf_protection', '~> 0.1'
 
+# Auth0 gem for management API
+gem 'auth0'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
 
